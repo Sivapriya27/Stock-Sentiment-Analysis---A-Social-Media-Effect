@@ -94,17 +94,13 @@
 				setTimeout(() => {
 					showLineToSection3 = true;
 
-					// setTimeout(() => {
-					// 	document.getElementById("section-3")?.scrollIntoView({ behavior: "smooth" });
-					// }, 2000);
-
 					allowScrollToSection3 = true;
 				}, 800);
 
 				observer.unobserve(node);
 			}
 		},
-		{ threshold: 0.9 } // 👈 triggers earlier (like 20% visible)
+		{ threshold: 0.9 } 
 	);
 	observer.observe(node);
 }
@@ -284,9 +280,6 @@ let showVideo = true;
 	<section class="tweet-block bird-start" use:revealTweet1>
 		{#if showBird && !morphToCircle}
 			<img src="{base}/bird.png" alt="Twitter bird" class="bird-fly-in" />
-			
-			  
-			  
 		{/if}
 
 		{#if morphToCircle && !showTweet1}
@@ -570,7 +563,7 @@ let showVideo = true;
 				</div>
 				<div class="tweet-body">
 					<p class="message">
-						We also had our mean sentiment score of tweets for that day in red — but you won’t catch this chart until you smash that ❤️ first!
+						We also had our mean sentiment score of tweets for that day in red — but you won't catch this chart until you smash that ❤️ first!
 					</p>
 					<p class="date">9:40 AM · 4/3/25</p>
 					<div class="actions">
@@ -602,6 +595,9 @@ let showVideo = true;
       <ReturnsSentimentLine />
 
 	  <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+		<p style="font-size: 20px; font-weight: bold; text-align: center; color: white; background-color: #1DA1F2;">After choosing a different interval,
+			give the graph a quick click to refresh the view.
+			It's our way of keeping you engaged.</p>
 		<p style="color: #333; font-size: 16px; line-height: 1.6;">
 		  <strong>A stock return:</strong> Reflects the daily percent change in stock price, influenced by price movements and dividends.
 		</p>
@@ -1447,100 +1443,239 @@ let showVideo = true;
 </Scroll>
 
 
+
 <style>
 	.tweet-block {
-	  width: 100%;
-	  max-width: 900px;
-	  margin: 1.5rem auto;
-	  padding: 1rem;
-	  background: transparent;
-	  transition: opacity 0.3s;
-	  z-index: 3;
-	  min-height: 45vh;
-	  display: flex;
-	  flex-direction: column;
-	  justify-content: center;
+	width: 100%;
+	max-width: 900px;
+	margin: 4rem auto;
+	padding: 2rem;
+	background: transparent;
+	transition: opacity 0.3s;
+	z-index: 3;
+
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	}
-  
+	
+	.locked {
+	display: none;
+	}
+
+	.unlocked {
+		scroll-snap-align: start;
+		pointer-events: auto;
+		opacity: 1;
+
+	}
+
+	.bird-fly-in {
+		width: 80px;
+		position: absolute;
+		top: -100px;
+		left: 6vw;
+		animation: birdFlyInScale 2.4s ease forwards;
+		transform-origin: center;
+		z-index: 500;
+	}
+
+	@keyframes birdFlyInScale {
+		0% { top: -100px; transform: scale(1); opacity: 1; }
+		40% { top: 30vh; transform: scale(1.4); }
+		100% { top: 30vh; transform: scale(0); opacity: 0; }
+	}
+
+	.circle {
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background-color: #1da1f2;
+		position: absolute;
+		left: 6vw;
+		top: 30vh;
+		z-index: 500;
+		opacity: 1;
+		transition: transform 1s ease-in-out;
+
+	}
+
 	.bird-start {
-	  height: 35vh;
-	  display: flex;
-	  flex-direction: column;
-	  justify-content: center;
-	  scroll-snap-align: start;
+	height: 100vh; 
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	scroll-snap-align: start;
 	}
-  
-	.line-container,
-	.reply-line-section3-container,
-	.reply-line-section4-container,
-	.reply-line-section17-container {
-	  height: 10vh;
-	  margin: 0.5rem 0;
-	  width: 100vw;
-	  display: flex;
-	  align-items: flex-start;
-	  justify-content: center;
-	  scroll-snap-align: none;
-	  position: relative;
-	  background-color: transparent;
-	  z-index: 1;
+	.float-anim {
+		animation: swirl 1.5s ease-in-out forwards;
+		z-index: 500;
+
 	}
-  
-	.vertical-line,
-	.reply-line-section3,
-	.reply-line-section4,
-	.reply-line-section17 {
-	  width: 3px;
-	  height: 0;
-	  background: #1da1f2;
-	  animation: drawLine 2s ease forwards;
-	  margin-top: 4px;
-	  z-index: 1;
+
+	@keyframes swirl {
+		0% { transform: translate(0, 0) scale(1); }
+		50% { transform: translate(100px, -30px) scale(1.2); }
+		100% { transform: translate(180px, 20px) scale(0.9); opacity: 0; }
 	}
-  
+
+	/*section 1 to 2 line */
+
+	.line-container {
+		height: 100vh;
+		width: 100vw;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		scroll-snap-align: none;
+		position: relative;
+		background-color: transparent;
+		z-index: 1;
+	}
+
+	.vertical-line {
+		width: 3px;
+		height: 0;
+		background: #1da1f2;
+		animation: drawLine 4s ease forwards;
+		margin-top: 60px;
+		z-index: 1;
+
+	}
+
 	@keyframes drawLine {
-	  from { height: 0; }
-	  to { height: 10vh; }
+		from { height: 0; }
+		to { height: 120vh; }
 	}
-  
-	@keyframes drawLineShort {
-	  from { height: 0; }
-	  to { height: 10vh; }
-	}
-  
-	@keyframes drawLineSection4 {
-	  from { height: 0; }
-	  to { height: 10vh; }
-	}
-  
-	@keyframes drawLineSection17 {
-	  from { height: 0; }
-	  to { height: 10vh; }
-	}
-
-	@media screen and (max-width: 768px) {
-  		.bird-start {
-    		height: 45vh;
-  }
+	.locked {
+	display: none;
 }
-  
-	.background-video {
-	  position: fixed;
-	  top: 0;
-	  left: 0;
-	  width: 100vw;
-	  height: 100vh;
-	  object-fit: cover;
-	  z-index: 0;
-	  pointer-events: none;
-	  opacity: 0.5;
-	}
-  
-	.content-overlay {
-	  position: relative;
-	  z-index: 4;
-	}
-  </style>
-  
+
+/*section 2 to 3 line */
+.reply-line-section3-container {
+	height: 100vh;
+		width: 100vw;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		scroll-snap-align: none;
+		position: relative;
+		background-color: transparent;
+		z-index: 1;
+}
+
+.reply-line-section3 {
+	width: 3px;
+		height: 0;
+		background: #1da1f2;
+		animation: drawLineShort 2s ease forwards;
+		margin-top: 60px;
+		z-index: 1;
+
+}
+
+@keyframes drawLineShort {
+	from { height: 0; }
+		to { height: 92vh; }
+}
+/*section 3 to 4 line */
+.reply-line-section4-container {
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	scroll-snap-align: none;
+	position: relative;
+	background-color: transparent;
+	z-index: 1;
+}
+
+.reply-line-section4 {
+	width: 3px;
+	height: 0;
+	background: #1da1f2;
+	animation: drawLineSection4 2s ease forwards;
+	margin-top: 60px;
+	z-index: 1;
+
+}
+
+@keyframes drawLineSection4 {
+	from { height: 0; }
+	to { height: 100vh; } /* adjust height if needed */
+}
 
 
+.reply-line-section17-container {
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	scroll-snap-align: none;
+	position: relative;
+	background-color: transparent;
+	z-index: 1;
+	
+}
+
+.reply-line-section17 {
+	width: 3px;
+	height: 0;
+	background: #1da1f2;
+	animation: drawLineSection17 2s ease forwards;
+	margin-top: 60px;
+	z-index: 1;
+
+}
+
+@keyframes drawLineSection17 {
+	from { height: 0; }
+	to { height: 90vh; } 
+}
+
+
+
+.removed-tweet {
+	background-color:  #e9edee;
+	color: black;
+	font-size: 16px;
+	padding: 1.2rem 2rem;
+	margin-top: -8px;
+	margin-bottom: -5px;
+	border-radius: 20px;
+	font-weight: 600;
+	text-align: center;
+	width: 63%;
+	max-width: 600px;
+	margin-left: 48px; 
+	z-index: 3;
+
+}
+
+.background-video {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	object-fit: cover;
+	z-index: 0;
+	pointer-events: none;
+	opacity: 0.5; 
+}
+
+
+.content-overlay {
+	position: relative;
+	z-index: 4;
+}
+
+
+
+
+	
+
+</style>

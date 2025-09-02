@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
   import { base } from '$app/paths';
+<<<<<<< HEAD
   import { tick } from 'svelte'; // <-- ADD THIS TO YOUR IMPORTS
 
 
@@ -17,12 +18,33 @@
 
   type IntervalKey = '1_DAY_RETURN' | '2_DAY_RETURN' | '3_DAY_RETURN' | '7_DAY_RETURN';
 
+=======
+  import { tick } from 'svelte';
+  interface StockData {
+  StockName: string;
+  Date: Date;
+  sent_score: number;
+  '1_DAY_RETURN': number;
+  '2_DAY_RETURN': number;
+  '3_DAY_RETURN': number;
+  '7_DAY_RETURN': number;
+  Tweet: string | null;  // Change from string to string | null
+}
+
+  type IntervalKey = '1_DAY_RETURN' | '2_DAY_RETURN' | '3_DAY_RETURN' | '7_DAY_RETURN';
+  
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
   let normalizedData: StockData[] = [];
   let selectedStock = 'TSLA';
   let selectedInterval: IntervalKey = '1_DAY_RETURN';
   let loading = true;
   let error: string | null = null;
   let stocks: string[] = [];
+<<<<<<< HEAD
+=======
+  let selectedPoint: StockData | null = null;
+  let showTweet = false;
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
 
   const width = 800;
   const height = 500;
@@ -30,6 +52,7 @@
 
   const intervals: IntervalKey[] = ['1_DAY_RETURN', '2_DAY_RETURN', '3_DAY_RETURN', '7_DAY_RETURN'];
 
+<<<<<<< HEAD
   let selectedPoint: StockData | null = null;
   let activeLines = { return: true, sentiment: true, trend: true };
 
@@ -49,19 +72,51 @@
           '7_DAY_RETURN': +d.seven_day_return,
         };
       });
+=======
+  let activeLines = { return: true, sentiment: true, trend: true };
+
+      onMount(async () => {
+  try {
+    normalizedData = await d3.csv(`${base}/line_data.csv`, (d) => {
+      const date = new Date(d.date);
+      if (isNaN(date.getTime())) throw new Error(`Invalid date: ${d.date}`);
+
+      return {
+        StockName: d.stock_name,
+        Date: date,
+        sent_score: +d.sent_score,
+        '1_DAY_RETURN': +d.one_day_return,
+        '2_DAY_RETURN': +d.two_day_return,
+        '3_DAY_RETURN': +d.three_day_return,
+        '7_DAY_RETURN': +d.seven_day_return,
+        Tweet: d.Tweet.trim() || null  // Add .trim() to remove whitespace
+      };
+
+    // Debug: Check first 5 tweets
+    console.log("Sample tweets:", normalizedData.slice(0, 5).map(d => d.Tweet));
+    });
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
 
       stocks = Array.from(new Set(normalizedData.map((d) => d.StockName))).sort();
       selectedStock = stocks.includes('TSLA') ? 'TSLA' : stocks[0];
 
       loading = false;
+<<<<<<< HEAD
       await tick();  // ✨ wait for reactivity to update filteredData
       updateChart(); 
+=======
+      await tick();
+      updateChart();
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
 
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to load data';
       loading = false;
+<<<<<<< HEAD
 
       
+=======
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
     }
   });
 
@@ -84,16 +139,34 @@
   }
 
   function updateChart() {
+<<<<<<< HEAD
     const svg = d3.select('#chart-svg');
     svg.selectAll('*').remove();
 
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
+=======
+  const svg = d3.select('#chart-svg');
+  svg.selectAll('*').remove();
+
+  // Increase left margin to move graph right
+  const adjustedMargin = {...margin, left: 80};
+  const innerWidth = width - adjustedMargin.left - adjustedMargin.right;
+  const innerHeight = height - adjustedMargin.top - adjustedMargin.bottom;
+
+  // Adjust y-scale domain to better show differences
+  const yExtent = d3.extent(filteredData, (d) => d[selectedInterval]);
+  const padding = (yExtent[1]! - yExtent[0]!) * 0.2; // 20% padding
+  const yScale = d3.scaleLinear()
+    .domain([yExtent[0]! - padding, yExtent[1]! + padding])
+    .range([innerHeight, 0]);
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
     const xScale = d3.scaleTime()
       .domain(d3.extent(filteredData, (d) => d.Date) as [Date, Date])
       .range([0, innerWidth]);
 
+<<<<<<< HEAD
     const yExtent = d3.extent(filteredData, (d) => d[selectedInterval]);
     const yScale = d3.scaleLinear()
       .domain([yExtent[0]! * 1.1, yExtent[1]! * 1.1])
@@ -103,6 +176,12 @@
       .x((d) => xScale(d.Date))
       .y((d) => yScale(d[selectedInterval]))
       .curve(d3.curveBasis);
+=======
+      const returnLine = d3.line<StockData>()
+  .x((d) => xScale(d.Date))
+  .y((d) => yScale(d[selectedInterval]))
+  .curve(d3.curveMonotoneX); // Changed from curveBasis to make differences more visible
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
 
     const sentimentLine = d3.line<StockData>()
       .x((d) => xScale(d.Date))
@@ -123,10 +202,17 @@
         redrawChart();
       });
 
+<<<<<<< HEAD
     const chart = svg
       .attr('viewBox', `0 0 ${width} ${height}`)
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
+=======
+      const chart = svg
+    .attr('viewBox', `0 0 ${width} ${height}`)
+    .append('g')
+    .attr('transform', `translate(${adjustedMargin.left},${adjustedMargin.top})`);
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
 
     svg.call(zoom);
 
@@ -135,12 +221,20 @@
     chart.append('g').attr('class', 'lines');
     chart.append('g').attr('class', 'tooltip-group');
 
+<<<<<<< HEAD
+=======
+    // Add clickable area for selecting points
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
     chart.append('rect')
       .attr('width', innerWidth)
       .attr('height', innerHeight)
       .attr('fill', 'none')
       .attr('pointer-events', 'all')
+<<<<<<< HEAD
       .on('mousemove', function (event) {
+=======
+      .on('click', function (event) {
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
         const [mouseX] = d3.pointer(event);
         const x0 = xScale.invert(mouseX);
         const bisect = d3.bisector((d: StockData) => d.Date).left;
@@ -152,13 +246,22 @@
         redrawChart();
       });
 
+<<<<<<< HEAD
     const legend = chart.append('g')
       .attr('transform', `translate(${innerWidth + 20}, 20)`);
+=======
+      const legend = chart.append('g')
+      .attr('transform', `translate(${innerWidth / 2 - 100}, ${innerHeight + 60})`);
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
 
     const legendItems = [
       { label: selectedInterval.replace(/_/g, ' '), color: 'blue', key: 'return' },
       { label: 'Sentiment Score', color: 'red', key: 'sentiment' },
+<<<<<<< HEAD
       { label: 'Trend Line', color: 'green', key: 'trend' }
+=======
+  
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
     ];
 
     legendItems.forEach((item, i) => {
@@ -193,7 +296,11 @@
 
       if (activeLines.return) lines.append('path').datum(filteredData).attr('fill', 'none').attr('stroke', 'blue').attr('stroke-width', 2).attr('d', returnLine);
       if (activeLines.sentiment) lines.append('path').datum(filteredData).attr('fill', 'none').attr('stroke', 'red').attr('stroke-width', 2).attr('d', sentimentLine);
+<<<<<<< HEAD
       // if (activeLines.trend) lines.append('path').datum(movingAverage(filteredData, selectedInterval)).attr('fill', 'none').attr('stroke', 'green').attr('stroke-width', 2).attr('stroke-dasharray', '4 2').attr('d', trendLine);
+=======
+      
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
 
       const tooltip = chart.select('.tooltip-group');
       tooltip.selectAll('*').remove();
@@ -203,6 +310,7 @@
         const yReturn = yScale(selectedPoint[selectedInterval]);
         const ySentiment = yScale(selectedPoint.sent_score);
 
+<<<<<<< HEAD
         if (activeLines.return) tooltip.append('circle').attr('cx', x).attr('cy', yReturn).attr('r', 6).attr('fill', 'orange').attr('stroke', 'black').attr('stroke-width', 1.5);
         if (activeLines.sentiment) tooltip.append('circle').attr('cx', x).attr('cy', ySentiment).attr('r', 6).attr('fill', 'limegreen').attr('stroke', 'black').attr('stroke-width', 1.5);
 
@@ -212,6 +320,70 @@
         g.append('text').attr('x', 10).attr('y', 20).style('font-size', '12px').style('fill', '#333').text(`Date: ${d3.timeFormat('%b %d, %Y')(selectedPoint.Date)}`);
         g.append('text').attr('x', 10).attr('y', 35).style('font-size', '12px').style('fill', '#333').text(`Return: ${selectedPoint[selectedInterval].toFixed(2)}`);
         g.append('text').attr('x', 10).attr('y', 50).style('font-size', '12px').style('fill', '#333').text(`Sentiment: ${selectedPoint.sent_score.toFixed(2)}`);
+=======
+        if (activeLines.return) tooltip.append('circle')
+          .attr('cx', x)
+          .attr('cy', yReturn)
+          .attr('r', 6)
+          .attr('fill', 'orange')
+          .attr('stroke', 'black')
+          .attr('stroke-width', 1.5)
+          .on('click', (event) => {
+            event.stopPropagation();
+          
+          });
+
+        if (activeLines.sentiment) tooltip.append('circle')
+          .attr('cx', x)
+          .attr('cy', ySentiment)
+          .attr('r', 6)
+          .attr('fill', 'limegreen')
+          .attr('stroke', 'black')
+          .attr('stroke-width', 1.5)
+          .on('click', (event) => {
+            event.stopPropagation();
+            showTweet = true;
+          });
+
+        const g = tooltip.append('g')
+          .attr('transform', `translate(${x + 15},${Math.min(yReturn, ySentiment) - 40})`)
+          .attr('class', 'tooltip-box');
+
+        g.append('rect')
+          .attr('width', 220)
+          .attr('height', 60)
+          .attr('fill', '#fffbe6')
+          .attr('stroke', '#333')
+          .attr('stroke-width', 1.5)
+          .attr('rx', 8)
+          .attr('ry', 8)
+          .attr('opacity', 0.9)
+          .on('click', (event) => {
+            event.stopPropagation();
+            showTweet = true;
+          });
+
+        g.append('text')
+          .attr('x', 10)
+          .attr('y', 20)
+          .style('font-size', '12px')
+          .style('fill', '#333')
+          .text(`Date: ${d3.timeFormat('%b %d, %Y')(selectedPoint.Date)}`);
+
+        g.append('text')
+          .attr('x', 10)
+          .attr('y', 35)
+          .style('font-size', '12px')
+          .style('fill', '#333')
+          .text(`Return: ${selectedPoint[selectedInterval].toFixed(2)}`);
+
+        g.append('text')
+          .attr('x', 10)
+          .attr('y', 50)
+          .style('font-size', '12px')
+          .style('fill', '#333')
+          .text(`Sentiment: ${selectedPoint.sent_score.toFixed(2)}`);
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
       }
     }
 
@@ -220,7 +392,113 @@
 </script>
 
 <style>
+<<<<<<< HEAD
   /* Keep your style, add extra if needed later */
+=======
+  .chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+
+  .controls {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+
+  .loading, .error {
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .tweet-card {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    max-width: 300px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .tweet-card::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: -10px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid white;
+  }
+
+  .tweet-card::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: -11px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid #ddd;
+    z-index: -1;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+
+  }
+  .toggle-btn {
+  padding: 10px 16px;
+  background-color: #58a3dc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: auto;
+  transition: background-color 0.3s;
+}
+
+.toggle-btn:hover {
+  background-color: #58a3dc;
+}
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
 </style>
 
 <div class="chart-container">
@@ -231,6 +509,7 @@
   {:else if loading}
     <div class="loading">Loading data...</div>
   {:else}
+<<<<<<< HEAD
     <div class="controls">
       <label>
         Stock:
@@ -249,6 +528,54 @@
         </select>
       </label>
     </div>
+=======
+  <div class="controls">
+    <label>
+      Stock:
+      <select bind:value={selectedStock}>
+        {#each stocks as stock}
+          <option value={stock}>{stock}</option>
+        {/each}
+      </select>
+    </label>
+    <label>
+      Return Interval:
+      <select bind:value={selectedInterval}>
+        {#each intervals as interval}
+          <option value={interval}>{interval.replace(/_/g, ' ')}</option>
+        {/each}
+      </select>
+    </label>
+    <button on:click={() => showTweet = !showTweet} class="toggle-btn">
+      {showTweet ? 'Hide Tweets' : 'Show Tweets'}
+    </button>
+  </div>
+
+ 
+    {#if selectedPoint && showTweet}
+    <div class="tweet-card">
+      <button class="close-btn" on:click={() => showTweet = false}>×</button>
+      <strong>Tweet on {d3.timeFormat('%b %d, %Y')(selectedPoint.Date)}:</strong>
+      {#if selectedPoint.Tweet}
+        <p style="white-space: pre-wrap; word-break: break-word;">{selectedPoint.Tweet}</p>
+      {:else}
+        <p>No tweet available for this date</p>
+      {/if}
+    </div>
+  {/if}
+  <div style="display: none;">
+    {#if filteredData.length > 0}
+      Data sample: {JSON.stringify(filteredData[0])}
+    {/if}
+  </div>
+<!-- Debug output (remove after testing) -->
+{#if selectedPoint}
+  <div style="display: none;">
+    Debug: {JSON.stringify(selectedPoint.Tweet)}
+  </div>
+{/if}
+
+>>>>>>> 844a2ba (Rectified the gaps based on fedbacks)
     <svg id="chart-svg"></svg>
   {/if}
 </div>
