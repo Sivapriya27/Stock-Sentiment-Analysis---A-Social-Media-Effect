@@ -75,7 +75,7 @@ Full methodology, results, and evaluation:
 - Expand **causality testing** to multi-year and multi-market datasets.  
 
 ---
-## 🚀 Quick start (Analysis)
+## 🚀 Quick start 
 
 > Requires Python 3.9+
 
