@@ -4,14 +4,14 @@
 (https://waynegretzky1.github.io/stock-sentiment-analysis/)  
 
 **Does Twitter sentiment move stock prices?**  
-This project investigates how social media sentiment correlates with U.S. stock returns, using **860K+ tweets**, **financial APIs**, and **NLP models**.  
+This project investigates how social media sentiment correlates with U.S. stock returns, using **10K+ tweets**, **financial APIs**, and **NLP models**.  
 It combines Python-based analysis with an interactive **Svelte web app**.
 
 ---
 
 ## ✨ Project Highlights
 
-- **Dataset:** 860K+ sentiment-tagged tweets (2021–2022), Yahoo Finance stock prices, Kaggle sentiment datasets.  
+- **Dataset:** 10K+ sentiment-tagged tweets (2021–2022), Yahoo Finance stock prices, Kaggle sentiment datasets.  
 - **Models:** TextBlob, LSTM-based sentiment classifier, transformer-based BERT (primary).  
 - **Visualizations:** Line charts, correlation bar charts, Granger causality heatmaps.  
 - **Frontend:** Svelte-based interactive web app with hoverable tweets, scroll storytelling, and dynamic plots.  
