@@ -11,7 +11,7 @@ It combines Python-based analysis with an interactive **Svelte web app**.
 
 ## ✨ Project Highlights
 
-- **Dataset:** 10K+ sentiment-tagged tweets (2021–2022), Yahoo Finance stock prices, Kaggle sentiment datasets.  
+- **Dataset:** 50K+ sentiment-tagged tweets (2021–2022), Yahoo Finance stock prices, Kaggle sentiment datasets.  
 - **Models:** TextBlob, LSTM-based sentiment classifier, transformer-based BERT (primary).  
 - **Visualizations:** Line charts, correlation bar charts, Granger causality heatmaps.  
 - **Frontend:** Svelte-based interactive web app with hoverable tweets, scroll storytelling, and dynamic plots.  
